@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API Lab — Programación Web 2</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- CURSOR GLOW -->
+  <div class="cursor-glow" id="cursor-glow"></div>
+
+  <!-- BACKGROUND GRID -->
+  <div class="bg-grid"></div>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-dot"></div>
+        <span class="brand-label">API<span class="brand-accent">LAB</span></span>
+      </div>
+      <div class="header-meta">
+        <span class="meta-tag">Programación Web 2</span>
+        <span class="meta-sep">·</span>
+        <span class="meta-tag">Prof. Jossy Tello</span>
+      </div>
+    </div>
+    <div class="header-hero">
+      <h1>Consume APIs.<br><em>Domina el flujo.</em></h1>
+      <p>Dos ejercicios prácticos usando <code>fetch</code> + <code>async/await</code> para conectar con APIs reales del mundo exterior.</p>
+    </div>
+  </header>
+
+  <!-- TABS -->
+  <nav>
+    <div class="tab-track">
+      <button class="tab active" onclick="switchTab(0)" data-idx="0">
+        <span class="tab-num">01</span>
+        <span class="tab-name">Galería</span>
+      </button>
+      <button class="tab" onclick="switchTab(1)" data-idx="1">
+        <span class="tab-num">02</span>
+        <span class="tab-name">Clima</span>
+      </button>
+      <div class="tab-indicator" id="tab-indicator"></div>
+    </div>
+  </nav>
+
+  <main>
+
+    <!-- ===== PANEL 1: GALERÍA ===== -->
+    <div class="panel active" id="panel-0">
+
+      <div class="section-header">
+        <div class="label-row">
+          <span class="ex-tag">EJ · 01</span>
+          <span class="api-tag">JSONPlaceholder API</span>
+        </div>
+        <h2>Galería de Imágenes</h2>
+        <p>Fotografías cargadas desde <strong>jsonplaceholder.typicode.com</strong> usando <code>fetch</code> y <code>async/await</code>. Cada tarjeta muestra ID, álbum y título.</p>
+      </div>
+
+      <div class="gallery-controls">
+        <button class="btn-primary" onclick="loadGallery(10)">Cargar 10</button>
+        <button class="btn-ghost" onclick="loadGallery(20)">20 fotos</button>
+        <button class="btn-ghost" onclick="loadGallery(50)">50 fotos</button>
+        <span class="count-chip" id="gallery-count"></span>
+      </div>
+
+      <div class="loader" id="gallery-loader"><div class="spinner"></div><span>Cargando desde la API...</span></div>
+      <div class="error-msg" id="gallery-error"></div>
+      <div id="gallery-grid"></div>
+
+    </div>
+
+
+    <!-- ===== PANEL 2: CLIMA ===== -->
+    <div class="panel" id="panel-1">
+
+      <div class="section-header">
+        <div class="label-row">
+          <span class="ex-tag">EJ · 02</span>
+          <span class="api-tag">wttr.in / OpenWeatherMap</span>
+        </div>
+        <h2>App del Clima</h2>
+        <p>Consulta la temperatura actual de cualquier ciudad en tiempo real. Funcionalmente equivalente a <strong>OpenWeatherMap</strong> — perfecta para practicar.</p>
+      </div>
+
+      <div class="weather-layout">
+        <div class="weather-left">
+          <div class="search-row">
+            <input class="inp" id="city-input" type="text" placeholder="Ingresa una ciudad... Bogotá, Lima, Madrid" onkeydown="if(event.key==='Enter') searchWeather()"/>
+            <button class="btn-primary" id="weather-btn" onclick="searchWeather()">Buscar →</button>
+          </div>
+          <div class="error-msg" id="weather-error"></div>
+          <div class="loader" id="weather-loader"><div class="spinner"></div><span>Buscando clima...</span></div>
+
+          <div class="weather-card" id="weather-card">
+            <div class="wc-top">
+              <div class="wc-location">
+                <div class="wc-city" id="w-city">—</div>
+                <div class="wc-country" id="w-country">—</div>
+              </div>
+              <div class="wc-temp" id="w-temp">—°</div>
+            </div>
+            <div class="wc-desc" id="w-desc">—</div>
+            <div class="wc-divider"></div>
+            <div class="wc-grid">
+              <div class="wc-stat">
+                <div class="wc-stat-label">Sensación</div>
+                <div class="wc-stat-val" id="w-feels">—</div>
+              </div>
+              <div class="wc-stat">
+                <div class="wc-stat-label">Humedad</div>
+                <div class="wc-stat-val" id="w-humidity">—</div>
+              </div>
+              <div class="wc-stat">
+                <div class="wc-stat-label">Viento</div>
+                <div class="wc-stat-val" id="w-wind">—</div>
+              </div>
+              <div class="wc-stat">
+                <div class="wc-stat-label">Visibilidad</div>
+                <div class="wc-stat-val" id="w-visibility">—</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="weather-right">
+          <div class="hint-card">
+            <div class="hint-icon">🔑</div>
+            <h3>Cómo obtener tu API Key</h3>
+            <p>Para usar <strong>OpenWeatherMap</strong> en producción:</p>
+            <ol>
+              <li>Regístrate en <strong>openweathermap.org</strong></li>
+              <li>Ve a tu perfil → <strong>API Keys</strong></li>
+              <li>Copia tu clave gratuita</li>
+              <li>Pégala en la URL: <code>?appid=TU_KEY</code></li>
+            </ol>
+            <div class="hint-note">
+              Esta demo usa <strong>wttr.in</strong> — API pública sin key necesaria. Ideal para practicar. 🌍
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRONÓSTICO 3 DÍAS -->
+      <div class="forecast-section" id="forecast-section">
+        <div class="forecast-title">
+          <span class="forecast-label">Pronóstico</span>
+          <span class="forecast-days-label">Próximos 3 días</span>
+        </div>
+        <div class="forecast-grid" id="forecast-grid"></div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <footer>
+    <span>API Lab · Programación </span>
+    <span class="footer-dot"></span>
+    <span>Hecho con <code>fetch</code> + <code>async/await</code></span>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>
